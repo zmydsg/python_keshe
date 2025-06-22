@@ -119,7 +119,8 @@ class VisualizationTab:
                 messagebox.showerror("错误", "范围格式错误，请使用 min,max 格式")
                 return
             
-            self.main_window.visualizer.plot_function(func_str, x_min, x_max)
+            # 修正：传递元组格式的范围参数
+            self.main_window.visualizer.plot_function(func_str, (x_min, x_max))
             
             # 保存函数绘图信息到current_data
             result_data = {
