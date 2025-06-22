@@ -29,6 +29,10 @@ class ScientificCalculatorGUI:
         self.root = tk.Tk()
         self.root.title("科学计算器")
         self.root.geometry("1200x800")
+        self.root.configure(bg='#f8f9fa')
+        
+        # 设置现代简约样式
+        self.setup_modern_style()
         
         # 初始化计算模块
         self.symbolic_calc = SymbolicCalculator()
@@ -43,11 +47,108 @@ class ScientificCalculatorGUI:
         # 设置UI
         self.setup_ui()
     
+    def setup_modern_style(self):
+        """设置现代简约样式"""
+        style = ttk.Style()
+        
+        # 配置主题
+        style.theme_use('clam')
+        
+        # 配置Notebook样式
+        style.configure('TNotebook', 
+                       background='#f8f9fa',
+                       borderwidth=0,
+                       tabmargins=[2, 5, 2, 0])
+        
+        style.configure('TNotebook.Tab',
+                       background='#e9ecef',
+                       foreground='#495057',
+                       padding=[20, 10],
+                       font=('Microsoft YaHei UI', 10),
+                       borderwidth=0)
+        
+        style.map('TNotebook.Tab',
+                 background=[('selected', '#ffffff'),
+                           ('active', '#dee2e6')],
+                 foreground=[('selected', '#212529')])
+        
+        # 配置Frame样式
+        style.configure('TFrame',
+                       background='#ffffff',
+                       borderwidth=0)
+        
+        # 配置LabelFrame样式
+        style.configure('TLabelframe',
+                       background='#ffffff',
+                       borderwidth=1,
+                       relief='solid',
+                       bordercolor='#dee2e6')
+        
+        style.configure('TLabelframe.Label',
+                       background='#ffffff',
+                       foreground='#495057',
+                       font=('Microsoft YaHei UI', 10, 'bold'))
+        
+        # 配置Button样式
+        style.configure('Modern.TButton',
+                       background='#007bff',
+                       foreground='white',
+                       borderwidth=0,
+                       focuscolor='none',
+                       padding=[15, 8],
+                       font=('Microsoft YaHei UI', 9))
+        
+        style.map('Modern.TButton',
+                 background=[('active', '#0056b3'),
+                           ('pressed', '#004085')])
+        
+        # 配置Entry样式
+        style.configure('Modern.TEntry',
+                       fieldbackground='#ffffff',
+                       borderwidth=1,
+                       relief='solid',
+                       bordercolor='#ced4da',
+                       padding=[10, 8],
+                       font=('Microsoft YaHei UI', 9))
+        
+        style.map('Modern.TEntry',
+                 bordercolor=[('focus', '#007bff')])
+        
+        # 配置Combobox样式
+        style.configure('Modern.TCombobox',
+                       fieldbackground='#ffffff',
+                       borderwidth=1,
+                       relief='solid',
+                       bordercolor='#ced4da',
+                       padding=[10, 8],
+                       font=('Microsoft YaHei UI', 9))
+        
+        # 配置Label样式
+        style.configure('Modern.TLabel',
+                       background='#ffffff',
+                       foreground='#495057',
+                       font=('Microsoft YaHei UI', 9))
+    
     def setup_ui(self):
         """设置用户界面"""
+        # 创建主容器
+        main_container = ttk.Frame(self.root)
+        main_container.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        
+        # 创建标题
+        title_frame = ttk.Frame(main_container)
+        title_frame.pack(fill=tk.X, pady=(0, 20))
+        
+        title_label = ttk.Label(title_frame, 
+                               text="科学计算工具",
+                               font=('Microsoft YaHei UI', 18, 'bold'),
+                               foreground='#212529',
+                               background='#f8f9fa')
+        title_label.pack()
+        
         # 创建主选项卡
-        self.notebook = ttk.Notebook(self.root)
-        self.notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.notebook = ttk.Notebook(main_container)
+        self.notebook.pack(fill=tk.BOTH, expand=True)
         
         # 创建各个选项卡
         self.symbolic_tab = SymbolicTab(self.notebook, self)

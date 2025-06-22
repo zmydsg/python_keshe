@@ -11,46 +11,71 @@ class NumericalTab:
     
     def create_ui(self):
         """创建数值计算界面"""
+        # 主容器
+        main_container = ttk.Frame(self.frame)
+        main_container.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        
         # 基本运算框架
-        basic_frame = ttk.LabelFrame(self.frame, text="基本运算")
-        basic_frame.pack(fill=tk.X, padx=5, pady=5)
+        basic_frame = ttk.LabelFrame(main_container, text="基本运算")
+        basic_frame.pack(fill=tk.X, pady=(0, 15))
         
-        ttk.Label(basic_frame, text="表达式:").grid(row=0, column=0, sticky=tk.W, padx=5, pady=5)
-        self.numerical_expr_entry = ttk.Entry(basic_frame, width=40)
-        self.numerical_expr_entry.grid(row=0, column=1, padx=5, pady=5)
+        basic_content = ttk.Frame(basic_frame)
+        basic_content.pack(fill=tk.X, padx=15, pady=15)
         
-        ttk.Button(basic_frame, text="计算", command=self.numerical_calculate).grid(row=0, column=2, padx=5, pady=5)
+        ttk.Label(basic_content, text="表达式:", style='Modern.TLabel').grid(row=0, column=0, sticky=tk.W, padx=(0, 10), pady=8)
+        self.numerical_expr_entry = ttk.Entry(basic_content, width=40, style='Modern.TEntry')
+        self.numerical_expr_entry.grid(row=0, column=1, padx=(0, 15), pady=8, sticky=tk.EW)
+        
+        ttk.Button(basic_content, text="计算", command=self.numerical_calculate, style='Modern.TButton').grid(row=0, column=2, padx=0, pady=8)
+        
+        basic_content.columnconfigure(1, weight=1)
         
         # 高级运算框架
-        advanced_frame = ttk.LabelFrame(self.frame, text="高级运算")
-        advanced_frame.pack(fill=tk.X, padx=5, pady=5)
+        advanced_frame = ttk.LabelFrame(main_container, text="高级运算")
+        advanced_frame.pack(fill=tk.X, pady=(0, 15))
         
-        ttk.Label(advanced_frame, text="函数:").grid(row=0, column=0, sticky=tk.W, padx=5, pady=5)
-        self.numerical_func_entry = ttk.Entry(advanced_frame, width=25)
-        self.numerical_func_entry.grid(row=0, column=1, padx=5, pady=5)
+        advanced_content = ttk.Frame(advanced_frame)
+        advanced_content.pack(fill=tk.X, padx=15, pady=15)
         
-        ttk.Label(advanced_frame, text="变量:").grid(row=0, column=2, sticky=tk.W, padx=5, pady=5)
-        self.numerical_var_entry = ttk.Entry(advanced_frame, width=10)
-        self.numerical_var_entry.grid(row=0, column=3, padx=5, pady=5)
+        # 第一行
+        ttk.Label(advanced_content, text="函数:", style='Modern.TLabel').grid(row=0, column=0, sticky=tk.W, padx=(0, 10), pady=8)
+        self.numerical_func_entry = ttk.Entry(advanced_content, width=25, style='Modern.TEntry')
+        self.numerical_func_entry.grid(row=0, column=1, padx=(0, 15), pady=8)
+        
+        ttk.Label(advanced_content, text="变量:", style='Modern.TLabel').grid(row=0, column=2, sticky=tk.W, padx=(0, 10), pady=8)
+        self.numerical_var_entry = ttk.Entry(advanced_content, width=10, style='Modern.TEntry')
+        self.numerical_var_entry.grid(row=0, column=3, padx=0, pady=8)
         self.numerical_var_entry.insert(0, "x")
         
-        ttk.Label(advanced_frame, text="点/范围:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
-        self.numerical_point_entry = ttk.Entry(advanced_frame, width=25)
-        self.numerical_point_entry.grid(row=1, column=1, padx=5, pady=5)
+        # 第二行
+        ttk.Label(advanced_content, text="点/范围:", style='Modern.TLabel').grid(row=1, column=0, sticky=tk.W, padx=(0, 10), pady=8)
+        self.numerical_point_entry = ttk.Entry(advanced_content, width=25, style='Modern.TEntry')
+        self.numerical_point_entry.grid(row=1, column=1, padx=(0, 15), pady=8)
         
-        button_frame2 = ttk.Frame(advanced_frame)
-        button_frame2.grid(row=1, column=2, columnspan=2, padx=5, pady=5)
+        button_frame2 = ttk.Frame(advanced_content)
+        button_frame2.grid(row=1, column=2, columnspan=2, padx=0, pady=8, sticky=tk.W)
         
-        ttk.Button(button_frame2, text="数值求导", command=self.numerical_derivative).pack(side=tk.LEFT, padx=2)
-        ttk.Button(button_frame2, text="数值积分", command=self.numerical_integrate).pack(side=tk.LEFT, padx=2)
-        ttk.Button(button_frame2, text="求解方程", command=self.numerical_solve).pack(side=tk.LEFT, padx=2)
+        ttk.Button(button_frame2, text="数值求导", command=self.numerical_derivative, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_frame2, text="数值积分", command=self.numerical_integrate, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_frame2, text="求解方程", command=self.numerical_solve, style='Modern.TButton').pack(side=tk.LEFT)
         
         # 结果显示框架
-        result_frame = ttk.LabelFrame(self.frame, text="结果")
-        result_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        result_frame = ttk.LabelFrame(main_container, text="结果")
+        result_frame.pack(fill=tk.BOTH, expand=True)
         
-        self.numerical_result_text = tk.Text(result_frame, height=15)
-        numerical_scrollbar = ttk.Scrollbar(result_frame, orient=tk.VERTICAL, command=self.numerical_result_text.yview)
+        result_content = ttk.Frame(result_frame)
+        result_content.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
+        
+        self.numerical_result_text = tk.Text(result_content, 
+                                           height=15,
+                                           font=('Consolas', 10),
+                                           bg='#f8f9fa',
+                                           fg='#495057',
+                                           borderwidth=1,
+                                           relief='solid',
+                                           selectbackground='#007bff',
+                                           selectforeground='white')
+        numerical_scrollbar = ttk.Scrollbar(result_content, orient=tk.VERTICAL, command=self.numerical_result_text.yview)
         self.numerical_result_text.configure(yscrollcommand=numerical_scrollbar.set)
         self.numerical_result_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         numerical_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)

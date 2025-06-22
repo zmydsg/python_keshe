@@ -11,59 +11,83 @@ class ExcelTab:
     
     def create_ui(self):
         """创建Excel处理界面"""
+        # 主容器
+        main_container = ttk.Frame(self.frame)
+        main_container.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        
         # 文件操作框架
-        file_frame = ttk.LabelFrame(self.frame, text="文件操作")
-        file_frame.pack(fill=tk.X, padx=5, pady=5)
+        file_frame = ttk.LabelFrame(main_container, text="文件操作")
+        file_frame.pack(fill=tk.X, pady=(0, 15))
         
-        ttk.Button(file_frame, text="选择Excel文件", command=self.select_excel_file).grid(row=0, column=0, padx=5, pady=5)
-        self.excel_file_label = ttk.Label(file_frame, text="未选择文件")
-        self.excel_file_label.grid(row=0, column=1, padx=5, pady=5)
+        file_content = ttk.Frame(file_frame)
+        file_content.pack(fill=tk.X, padx=15, pady=15)
         
-        ttk.Button(file_frame, text="读取数据", command=self.read_excel_data).grid(row=0, column=2, padx=5, pady=5)
-        ttk.Button(file_frame, text="保存结果", command=self.main_window.save_excel_data).grid(row=0, column=3, padx=5, pady=5)
+        ttk.Button(file_content, text="选择Excel文件", command=self.select_excel_file, style='Modern.TButton').grid(row=0, column=0, padx=(0, 15), pady=8)
+        self.excel_file_label = ttk.Label(file_content, text="未选择文件", style='Modern.TLabel')
+        self.excel_file_label.grid(row=0, column=1, padx=(0, 15), pady=8, sticky=tk.W)
+        
+        ttk.Button(file_content, text="读取数据", command=self.read_excel_data, style='Modern.TButton').grid(row=0, column=2, padx=(0, 15), pady=8)
+        ttk.Button(file_content, text="保存结果", command=self.main_window.save_excel_data, style='Modern.TButton').grid(row=0, column=3, padx=0, pady=8)
+        
+        file_content.columnconfigure(1, weight=1)
         
         # 数据操作框架
-        operation_frame = ttk.LabelFrame(self.frame, text="数据操作")
-        operation_frame.pack(fill=tk.X, padx=5, pady=5)
+        operation_frame = ttk.LabelFrame(main_container, text="数据操作")
+        operation_frame.pack(fill=tk.X, pady=(0, 15))
         
-        # 列选择
-        ttk.Label(operation_frame, text="选择列:").grid(row=0, column=0, sticky=tk.W, padx=5, pady=5)
-        self.column_combo = ttk.Combobox(operation_frame, width=15)
-        self.column_combo.grid(row=0, column=1, padx=5, pady=5)
+        operation_content = ttk.Frame(operation_frame)
+        operation_content.pack(fill=tk.X, padx=15, pady=15)
+        
+        # 第一行
+        ttk.Label(operation_content, text="选择列:", style='Modern.TLabel').grid(row=0, column=0, sticky=tk.W, padx=(0, 10), pady=8)
+        self.column_combo = ttk.Combobox(operation_content, width=15, style='Modern.TCombobox')
+        self.column_combo.grid(row=0, column=1, padx=(0, 15), pady=8)
         
         # 操作按钮
-        ttk.Button(operation_frame, text="导入到数值计算", command=self.import_to_numerical).grid(row=0, column=2, padx=5, pady=5)
-        ttk.Button(operation_frame, text="导入到数据处理", command=self.import_to_data_processing).grid(row=0, column=3, padx=5, pady=5)
-        ttk.Button(operation_frame, text="导入到可视化", command=self.import_to_visualization).grid(row=0, column=4, padx=5, pady=5)
+        button_container1 = ttk.Frame(operation_content)
+        button_container1.grid(row=0, column=2, columnspan=3, padx=0, pady=8, sticky=tk.W)
         
-        # 双列操作
-        ttk.Label(operation_frame, text="X列:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
-        self.x_column_combo = ttk.Combobox(operation_frame, width=12)
-        self.x_column_combo.grid(row=1, column=1, padx=5, pady=5)
+        ttk.Button(button_container1, text="导入到数值计算", command=self.import_to_numerical, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_container1, text="导入到数据处理", command=self.import_to_data_processing, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_container1, text="导入到可视化", command=self.import_to_visualization, style='Modern.TButton').pack(side=tk.LEFT)
         
-        ttk.Label(operation_frame, text="Y列:").grid(row=1, column=2, sticky=tk.W, padx=5, pady=5)
-        self.y_column_combo = ttk.Combobox(operation_frame, width=12)
-        self.y_column_combo.grid(row=1, column=3, padx=5, pady=5)
+        # 第二行
+        ttk.Label(operation_content, text="X列:", style='Modern.TLabel').grid(row=1, column=0, sticky=tk.W, padx=(0, 10), pady=8)
+        self.x_column_combo = ttk.Combobox(operation_content, width=12, style='Modern.TCombobox')
+        self.x_column_combo.grid(row=1, column=1, padx=(0, 15), pady=8)
         
-        ttk.Button(operation_frame, text="导入XY数据", command=self.import_xy_data).grid(row=1, column=4, padx=5, pady=5)
+        ttk.Label(operation_content, text="Y列:", style='Modern.TLabel').grid(row=1, column=2, sticky=tk.W, padx=(0, 10), pady=8)
+        self.y_column_combo = ttk.Combobox(operation_content, width=12, style='Modern.TCombobox')
+        self.y_column_combo.grid(row=1, column=3, padx=(0, 15), pady=8)
+        
+        ttk.Button(operation_content, text="导入XY数据", command=self.import_xy_data, style='Modern.TButton').grid(row=1, column=4, padx=0, pady=8)
         
         # 计算功能框架
-        calc_frame = ttk.LabelFrame(self.frame, text="Excel数据计算")
-        calc_frame.pack(fill=tk.X, padx=5, pady=5)
+        calc_frame = ttk.LabelFrame(main_container, text="Excel数据计算")
+        calc_frame.pack(fill=tk.X, pady=(0, 15))
         
-        ttk.Button(calc_frame, text="统计分析", command=self.excel_statistics).grid(row=0, column=0, padx=5, pady=5)
-        ttk.Button(calc_frame, text="相关性分析", command=self.excel_correlation).grid(row=0, column=1, padx=5, pady=5)
-        ttk.Button(calc_frame, text="曲线拟合", command=self.excel_curve_fitting).grid(row=0, column=2, padx=5, pady=5)
-        ttk.Button(calc_frame, text="异常值检测", command=self.excel_outlier_detection).grid(row=0, column=3, padx=5, pady=5)
+        calc_content = ttk.Frame(calc_frame)
+        calc_content.pack(fill=tk.X, padx=15, pady=15)
+        
+        button_container2 = ttk.Frame(calc_content)
+        button_container2.pack(fill=tk.X)
+        
+        ttk.Button(button_container2, text="统计分析", command=self.excel_statistics, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_container2, text="相关性分析", command=self.excel_correlation, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_container2, text="曲线拟合", command=self.excel_curve_fitting, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_container2, text="异常值检测", command=self.excel_outlier_detection, style='Modern.TButton').pack(side=tk.LEFT)
         
         # 数据显示框架
-        data_frame = ttk.LabelFrame(self.frame, text="数据预览")
-        data_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        data_frame = ttk.LabelFrame(main_container, text="数据预览")
+        data_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 15))
+        
+        data_content = ttk.Frame(data_frame)
+        data_content.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
         
         # 创建表格
-        self.excel_tree = ttk.Treeview(data_frame)
-        excel_scrollbar_y = ttk.Scrollbar(data_frame, orient=tk.VERTICAL, command=self.excel_tree.yview)
-        excel_scrollbar_x = ttk.Scrollbar(data_frame, orient=tk.HORIZONTAL, command=self.excel_tree.xview)
+        self.excel_tree = ttk.Treeview(data_content, style='Modern.Treeview')
+        excel_scrollbar_y = ttk.Scrollbar(data_content, orient=tk.VERTICAL, command=self.excel_tree.yview)
+        excel_scrollbar_x = ttk.Scrollbar(data_content, orient=tk.HORIZONTAL, command=self.excel_tree.xview)
         self.excel_tree.configure(yscrollcommand=excel_scrollbar_y.set, xscrollcommand=excel_scrollbar_x.set)
         
         self.excel_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -71,11 +95,22 @@ class ExcelTab:
         excel_scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
         
         # 结果显示
-        result_frame = ttk.LabelFrame(self.frame, text="计算结果")
-        result_frame.pack(fill=tk.X, padx=5, pady=5)
+        result_frame = ttk.LabelFrame(main_container, text="计算结果")
+        result_frame.pack(fill=tk.X)
         
-        self.excel_result_text = tk.Text(result_frame, height=8)
-        excel_result_scrollbar = ttk.Scrollbar(result_frame, orient=tk.VERTICAL, command=self.excel_result_text.yview)
+        result_content = ttk.Frame(result_frame)
+        result_content.pack(fill=tk.X, padx=15, pady=15)
+        
+        self.excel_result_text = tk.Text(result_content, 
+                                        height=8,
+                                        font=('Consolas', 10),
+                                        bg='#f8f9fa',
+                                        fg='#495057',
+                                        borderwidth=1,
+                                        relief='solid',
+                                        selectbackground='#007bff',
+                                        selectforeground='white')
+        excel_result_scrollbar = ttk.Scrollbar(result_content, orient=tk.VERTICAL, command=self.excel_result_text.yview)
         self.excel_result_text.configure(yscrollcommand=excel_result_scrollbar.set)
         self.excel_result_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         excel_result_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)

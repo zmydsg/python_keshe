@@ -11,45 +11,72 @@ class DataProcessingTab:
     
     def create_ui(self):
         """创建数据处理界面"""
+        # 主容器
+        main_container = ttk.Frame(self.frame)
+        main_container.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        
         # 数据输入框架
-        input_frame = ttk.LabelFrame(self.frame, text="数据输入")
-        input_frame.pack(fill=tk.X, padx=5, pady=5)
+        input_frame = ttk.LabelFrame(main_container, text="数据输入")
+        input_frame.pack(fill=tk.X, pady=(0, 15))
         
-        ttk.Label(input_frame, text="数据:").grid(row=0, column=0, sticky=tk.W, padx=5, pady=5)
-        self.data_entry = ttk.Entry(input_frame, width=50)
-        self.data_entry.grid(row=0, column=1, padx=5, pady=5)
+        # 内容容器
+        input_content = ttk.Frame(input_frame)
+        input_content.pack(fill=tk.X, padx=15, pady=15)
         
-        button_frame1 = ttk.Frame(input_frame)
-        button_frame1.grid(row=0, column=2, padx=5, pady=5)
+        ttk.Label(input_content, text="数据:", style='Modern.TLabel').grid(row=0, column=0, sticky=tk.W, padx=(0, 10), pady=8)
+        self.data_entry = ttk.Entry(input_content, width=50, style='Modern.TEntry')
+        self.data_entry.grid(row=0, column=1, padx=(0, 15), pady=8, sticky=tk.EW)
         
-        ttk.Button(button_frame1, text="统计分析", command=self.data_statistics).pack(side=tk.LEFT, padx=2)
-        ttk.Button(button_frame1, text="异常值检测", command=self.data_outliers).pack(side=tk.LEFT, padx=2)
+        button_frame1 = ttk.Frame(input_content)
+        button_frame1.grid(row=0, column=2, padx=0, pady=8)
+        
+        ttk.Button(button_frame1, text="统计分析", command=self.data_statistics, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_frame1, text="异常值检测", command=self.data_outliers, style='Modern.TButton').pack(side=tk.LEFT)
+        
+        # 配置列权重
+        input_content.columnconfigure(1, weight=1)
         
         # 曲线拟合框架
-        fit_frame = ttk.LabelFrame(self.frame, text="曲线拟合")
-        fit_frame.pack(fill=tk.X, padx=5, pady=5)
+        fit_frame = ttk.LabelFrame(main_container, text="曲线拟合")
+        fit_frame.pack(fill=tk.X, pady=(0, 15))
         
-        ttk.Label(fit_frame, text="X数据:").grid(row=0, column=0, sticky=tk.W, padx=5, pady=5)
-        self.x_data_entry = ttk.Entry(fit_frame, width=25)
-        self.x_data_entry.grid(row=0, column=1, padx=5, pady=5)
+        fit_content = ttk.Frame(fit_frame)
+        fit_content.pack(fill=tk.X, padx=15, pady=15)
         
-        ttk.Label(fit_frame, text="Y数据:").grid(row=0, column=2, sticky=tk.W, padx=5, pady=5)
-        self.y_data_entry = ttk.Entry(fit_frame, width=25)
-        self.y_data_entry.grid(row=0, column=3, padx=5, pady=5)
+        # 第一行
+        ttk.Label(fit_content, text="X数据:", style='Modern.TLabel').grid(row=0, column=0, sticky=tk.W, padx=(0, 10), pady=8)
+        self.x_data_entry = ttk.Entry(fit_content, width=25, style='Modern.TEntry')
+        self.x_data_entry.grid(row=0, column=1, padx=(0, 15), pady=8)
         
-        ttk.Label(fit_frame, text="拟合类型:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
-        self.fit_type_combo = ttk.Combobox(fit_frame, values=["linear", "polynomial", "exponential"], width=15)
-        self.fit_type_combo.grid(row=1, column=1, padx=5, pady=5)
+        ttk.Label(fit_content, text="Y数据:", style='Modern.TLabel').grid(row=0, column=2, sticky=tk.W, padx=(0, 10), pady=8)
+        self.y_data_entry = ttk.Entry(fit_content, width=25, style='Modern.TEntry')
+        self.y_data_entry.grid(row=0, column=3, padx=0, pady=8)
+        
+        # 第二行
+        ttk.Label(fit_content, text="拟合类型:", style='Modern.TLabel').grid(row=1, column=0, sticky=tk.W, padx=(0, 10), pady=8)
+        self.fit_type_combo = ttk.Combobox(fit_content, values=["linear", "polynomial", "exponential"], width=22, style='Modern.TCombobox')
+        self.fit_type_combo.grid(row=1, column=1, padx=(0, 15), pady=8)
         self.fit_type_combo.set("linear")
         
-        ttk.Button(fit_frame, text="曲线拟合", command=self.curve_fitting).grid(row=1, column=2, padx=5, pady=5)
+        ttk.Button(fit_content, text="曲线拟合", command=self.curve_fitting, style='Modern.TButton').grid(row=1, column=2, padx=0, pady=8, sticky=tk.W)
         
         # 结果显示框架
-        result_frame = ttk.LabelFrame(self.frame, text="结果")
-        result_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        result_frame = ttk.LabelFrame(main_container, text="结果")
+        result_frame.pack(fill=tk.BOTH, expand=True)
         
-        self.data_result_text = tk.Text(result_frame, height=15)
-        data_scrollbar = ttk.Scrollbar(result_frame, orient=tk.VERTICAL, command=self.data_result_text.yview)
+        result_content = ttk.Frame(result_frame)
+        result_content.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
+        
+        self.data_result_text = tk.Text(result_content, 
+                                       height=15,
+                                       font=('Consolas', 10),
+                                       bg='#f8f9fa',
+                                       fg='#495057',
+                                       borderwidth=1,
+                                       relief='solid',
+                                       selectbackground='#007bff',
+                                       selectforeground='white')
+        data_scrollbar = ttk.Scrollbar(result_content, orient=tk.VERTICAL, command=self.data_result_text.yview)
         self.data_result_text.configure(yscrollcommand=data_scrollbar.set)
         self.data_result_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         data_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
