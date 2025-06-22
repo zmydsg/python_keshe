@@ -120,3 +120,61 @@ class DataVisualizer:
             return "多线图绘制成功"
         except Exception as e:
             return f"错误: {str(e)}"
+    
+    def plot_curve_fitting(self, x_data, y_data, fit_type='linear', title="曲线拟合"):
+        """绘制曲线拟合图像"""
+        try:
+            from .data_processing import DataProcessor
+            processor = DataProcessor()
+            
+            # 获取拟合结果
+            fit_result = processor.curve_fitting(x_data, y_data, fit_type)
+            
+            if isinstance(fit_result, str):  # 错误情况
+                return fit_result
+            
+            fitted_y = fit_result['拟合数据']
+            equation = fit_result['拟合方程']
+            r_squared = fit_result['R²']
+            
+            # 清除之前的图像
+            self.figure.clear()
+            ax = self.figure.add_subplot(111)
+            
+            # 绘制原始数据点
+            ax.scatter(x_data, y_data, alpha=0.7, label='原始数据', color='blue')
+            
+            # 绘制拟合曲线
+            # 为了使拟合曲线更平滑，生成更多点
+            x_smooth = np.linspace(min(x_data), max(x_data), 100)
+            
+            if fit_type == 'linear':
+                # 线性拟合
+                from scipy import stats
+                slope, intercept, _, _, _ = stats.linregress(x_data, y_data)
+                y_smooth = slope * x_smooth + intercept
+            elif fit_type == 'polynomial':
+                # 多项式拟合
+                coeffs = np.polyfit(x_data, y_data, 2)
+                y_smooth = np.polyval(coeffs, x_smooth)
+            elif fit_type == 'exponential':
+                # 指数拟合
+                from scipy.optimize import curve_fit
+                def exp_func(x, a, b, c):
+                    return a * np.exp(b * x) + c
+                popt, _ = curve_fit(exp_func, x_data, y_data, maxfev=1000)
+                y_smooth = exp_func(x_smooth, *popt)
+            
+            ax.plot(x_smooth, y_smooth, 'r-', label=f'拟合曲线 (R²={r_squared:.4f})', linewidth=2)
+            
+            ax.set_title(f'{title}\n{equation}')
+            ax.set_xlabel('X')
+            ax.set_ylabel('Y')
+            ax.legend()
+            ax.grid(True, alpha=0.3)
+            
+            self.canvas.draw()
+            return f"曲线拟合图像绘制成功\n{equation}\nR² = {r_squared:.4f}"
+            
+        except Exception as e:
+            return f"错误: {str(e)}"

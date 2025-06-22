@@ -796,8 +796,8 @@ class ScientificCalculatorGUI:
     def curve_fitting(self):
         """曲线拟合"""
         try:
-            x_str = self.x_data_entry.get()
-            y_str = self.y_data_entry.get()
+            x_str = self.data_x_entry.get()
+            y_str = self.data_y_entry.get()
             fit_type = self.fit_type_combo.get()
             
             if not x_str or not y_str:
@@ -810,11 +810,24 @@ class ScientificCalculatorGUI:
             if len(x_data) != len(y_data):
                 messagebox.showwarning("输入错误", "X和Y数据长度不一致")
                 return
-                
+            
+            # 获取拟合结果
             result = self.data_processor.curve_fitting(x_data, y_data, fit_type)
             
+            # 显示文本结果
             self.data_result_text.delete(1.0, tk.END)
-            self.data_result_text.insert(tk.END, f"曲线拟合结果 ({fit_type}):\n{result}\n")
+            if isinstance(result, dict):
+                self.data_result_text.insert(tk.END, f"曲线拟合结果 ({fit_type}):\n")
+                self.data_result_text.insert(tk.END, f"拟合方程: {result['拟合方程']}\n")
+                self.data_result_text.insert(tk.END, f"R²: {result['R²']:.4f}\n")
+            else:
+                self.data_result_text.insert(tk.END, f"错误: {result}")
+                return
+            
+            # 绘制拟合图像
+            plot_result = self.visualizer.plot_curve_fitting(x_data, y_data, fit_type)
+            self.data_result_text.insert(tk.END, f"\n图像: {plot_result}")
+            
         except Exception as e:
             self.data_result_text.delete(1.0, tk.END)
             self.data_result_text.insert(tk.END, f"错误: {str(e)}")
@@ -921,6 +934,29 @@ class ScientificCalculatorGUI:
             self.symbolic_result_text.delete(1.0, tk.END)
             self.symbolic_result_text.insert(tk.END, f"错误: {str(e)}")
 
+
+    def plot_curve_fit(self):
+        """在可视化标签页中绘制曲线拟合"""
+        try:
+            x_str = self.plot_x_entry.get()
+            y_str = self.plot_y_entry.get()
+            
+            if not x_str or not y_str:
+                messagebox.showwarning("输入错误", "请输入X和Y数据")
+                return
+                
+            x_data = [float(x.strip()) for x in x_str.split(',') if x.strip()]
+            y_data = [float(y.strip()) for y in y_str.split(',') if y.strip()]
+            
+            if len(x_data) != len(y_data):
+                messagebox.showwarning("输入错误", "X和Y数据长度不一致")
+                return
+            
+            # 默认使用线性拟合，你可以添加选择框让用户选择拟合类型
+            self.visualizer.plot_curve_fitting(x_data, y_data, 'linear')
+            
+        except Exception as e:
+            messagebox.showerror("错误", f"绘图错误: {str(e)}")
 
     def run(self):
         """运行GUI应用"""
