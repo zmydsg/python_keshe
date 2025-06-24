@@ -188,3 +188,107 @@ class DataVisualizer:
             
         except Exception as e:
             return f"错误: {str(e)}"
+    
+    def plot_curve_fit(self, x_data, y_data, fit_type='linear', degree=2):
+        """
+        绘制曲线拟合图像
+        
+        Args:
+            x_data: X轴数据
+            y_data: Y轴数据
+            fit_type: 拟合类型 ('linear', 'polynomial', 'exponential')
+            degree: 多项式拟合的度数（仅当fit_type='polynomial'时使用）
+        """
+        try:
+            if not x_data or not y_data:
+                raise ValueError("数据不能为空")
+            
+            if len(x_data) != len(y_data):
+                raise ValueError("X和Y数据长度必须相同")
+            
+            # 清除之前的图形
+            self.ax.clear()
+            
+            # 绘制原始数据点
+            self.ax.scatter(x_data, y_data, color='blue', alpha=0.6, label='原始数据')
+            
+            # 进行曲线拟合
+            from .data_processing import DataProcessor
+            processor = DataProcessor()
+            
+            if fit_type == 'linear':
+                coeffs, r_squared = processor.linear_regression(x_data, y_data)
+                # 生成拟合曲线的x值
+                x_fit = np.linspace(min(x_data), max(x_data), 100)
+                y_fit = coeffs[0] * x_fit + coeffs[1]
+                equation = f'y = {coeffs[0]:.4f}x + {coeffs[1]:.4f}'
+                
+            elif fit_type == 'polynomial':
+                coeffs, r_squared = processor.polynomial_regression(x_data, y_data, degree)
+                x_fit = np.linspace(min(x_data), max(x_data), 100)
+                y_fit = np.polyval(coeffs, x_fit)
+                # 构建多项式方程字符串
+                terms = []
+                for i, coeff in enumerate(coeffs):
+                    power = len(coeffs) - 1 - i
+                    if power == 0:
+                        terms.append(f'{coeff:.4f}')
+                    elif power == 1:
+                        terms.append(f'{coeff:.4f}x')
+                    else:
+                        terms.append(f'{coeff:.4f}x^{power}')
+                equation = 'y = ' + ' + '.join(terms)
+                
+            elif fit_type == 'exponential':
+                coeffs, r_squared = processor.exponential_regression(x_data, y_data)
+                x_fit = np.linspace(min(x_data), max(x_data), 100)
+                y_fit = coeffs[0] * np.exp(coeffs[1] * x_fit)
+                equation = f'y = {coeffs[0]:.4f} * exp({coeffs[1]:.4f}x)'
+            
+            # 绘制拟合曲线
+            self.ax.plot(x_fit, y_fit, 'r-', linewidth=2, label=f'{fit_type.capitalize()} 拟合')
+            
+            # 设置图形属性
+            self.ax.set_xlabel('X')
+            self.ax.set_ylabel('Y')
+            self.ax.set_title(f'曲线拟合 - {fit_type.capitalize()}\n{equation}\nR² = {r_squared:.4f}')
+            self.ax.legend()
+            self.ax.grid(True, alpha=0.3)
+            
+            # 刷新画布
+            self.canvas.draw()
+            
+            return {
+                'coefficients': coeffs,
+                'r_squared': r_squared,
+                'equation': equation,
+                'fit_type': fit_type
+            }
+            
+        except Exception as e:
+            # 清除图形并显示错误
+            self.ax.clear()
+            self.ax.text(0.5, 0.5, f'绘图错误: {str(e)}', 
+                        horizontalalignment='center', verticalalignment='center',
+                        transform=self.ax.transAxes, fontsize=12, color='red')
+            self.canvas.draw()
+            raise e
+    
+    def plot_multiple_lines(self, data_sets, title="多线图", xlabel="X轴", ylabel="Y轴"):
+        """绘制多条线"""
+        try:
+            self.figure.clear()
+            ax = self.figure.add_subplot(111)
+            
+            for i, (x_data, y_data, label) in enumerate(data_sets):
+                ax.plot(x_data, y_data, marker='o', label=label)
+            
+            ax.set_title(title)
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+            ax.legend()
+            ax.grid(True, alpha=0.3)
+            self.canvas.draw()
+            return "多线图绘制成功"
+        except Exception as e:
+            return f"错误: {str(e)}"

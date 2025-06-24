@@ -71,8 +71,30 @@ class VisualizationTab:
                 messagebox.showwarning("输入错误", "请输入X和Y数据")
                 return
                 
-            x_data = [float(x.strip()) for x in x_str.split(',') if x.strip()]
-            y_data = [float(y.strip()) for y in y_str.split(',') if y.strip()]
+            # 改进的数据解析，过滤无效数据
+            x_data = []
+            for x in x_str.split(','):
+                x = x.strip()
+                if x:
+                    try:
+                        x_data.append(float(x))
+                    except ValueError:
+                        messagebox.showwarning("数据错误", f"无效的X轴数据: '{x}'，请输入有效的数字")
+                        return
+            
+            y_data = []
+            for y in y_str.split(','):
+                y = y.strip()
+                if y:
+                    try:
+                        y_data.append(float(y))
+                    except ValueError:
+                        messagebox.showwarning("数据错误", f"无效的Y轴数据: '{y}'，请输入有效的数字")
+                        return
+            
+            if len(x_data) != len(y_data):
+                messagebox.showwarning("数据错误", "X和Y数据的长度不一致")
+                return
             
             self.main_window.visualizer.plot_line(x_data, y_data)
             
@@ -97,8 +119,30 @@ class VisualizationTab:
                 messagebox.showwarning("输入错误", "请输入X和Y数据")
                 return
                 
-            x_data = [float(x.strip()) for x in x_str.split(',') if x.strip()]
-            y_data = [float(y.strip()) for y in y_str.split(',') if y.strip()]
+            # 改进的数据解析，过滤无效数据
+            x_data = []
+            for x in x_str.split(','):
+                x = x.strip()
+                if x:
+                    try:
+                        x_data.append(float(x))
+                    except ValueError:
+                        messagebox.showwarning("数据错误", f"无效的X轴数据: '{x}'，请输入有效的数字")
+                        return
+            
+            y_data = []
+            for y in y_str.split(','):
+                y = y.strip()
+                if y:
+                    try:
+                        y_data.append(float(y))
+                    except ValueError:
+                        messagebox.showwarning("数据错误", f"无效的Y轴数据: '{y}'，请输入有效的数字")
+                        return
+            
+            if len(x_data) != len(y_data):
+                messagebox.showwarning("数据错误", "X和Y数据的长度不一致")
+                return
             
             self.main_window.visualizer.plot_scatter(x_data, y_data)
             
@@ -107,6 +151,54 @@ class VisualizationTab:
                 'X数据': x_data,
                 'Y数据': y_data,
                 '图表类型': ['散点图'] * len(x_data)
+            }
+            self.main_window.current_data = pd.DataFrame(result_data)
+            
+        except Exception as e:
+            messagebox.showerror("错误", f"绘图错误: {str(e)}")
+    
+    def plot_curve_fit(self):
+        """绘制曲线拟合"""
+        try:
+            x_str = self.plot_x_entry.get()
+            y_str = self.plot_y_entry.get()
+            
+            if not x_str or not y_str:
+                messagebox.showwarning("输入错误", "请输入X和Y数据")
+                return
+                
+            # 改进的数据解析，过滤无效数据
+            x_data = []
+            for x in x_str.split(','):
+                x = x.strip()
+                if x:
+                    try:
+                        x_data.append(float(x))
+                    except ValueError:
+                        messagebox.showwarning("数据错误", f"无效的X轴数据: '{x}'，请输入有效的数字")
+                        return
+            
+            y_data = []
+            for y in y_str.split(','):
+                y = y.strip()
+                if y:
+                    try:
+                        y_data.append(float(y))
+                    except ValueError:
+                        messagebox.showwarning("数据错误", f"无效的Y轴数据: '{y}'，请输入有效的数字")
+                        return
+            
+            if len(x_data) != len(y_data):
+                messagebox.showwarning("数据错误", "X和Y数据的长度不一致")
+                return
+            
+            self.main_window.visualizer.plot_curve_fitting(x_data, y_data)
+            
+            # 保存绘图数据到current_data
+            result_data = {
+                'X数据': x_data,
+                'Y数据': y_data,
+                '图表类型': ['曲线拟合'] * len(x_data)
             }
             self.main_window.current_data = pd.DataFrame(result_data)
             
@@ -158,32 +250,6 @@ class VisualizationTab:
             result_data = {
                 'Y数据': y_data,
                 '图表类型': ['直方图'] * len(y_data)
-            }
-            self.main_window.current_data = pd.DataFrame(result_data)
-            
-        except Exception as e:
-            messagebox.showerror("错误", f"绘图错误: {str(e)}")
-    
-    def plot_curve_fit(self):
-        """绘制曲线拟合"""
-        try:
-            x_str = self.plot_x_entry.get()
-            y_str = self.plot_y_entry.get()
-            
-            if not x_str or not y_str:
-                messagebox.showwarning("输入错误", "请输入X和Y数据")
-                return
-                
-            x_data = [float(x.strip()) for x in x_str.split(',') if x.strip()]
-            y_data = [float(y.strip()) for y in y_str.split(',') if y.strip()]
-            
-            self.main_window.visualizer.plot_curve_fit(x_data, y_data)
-            
-            # 保存绘图数据到current_data
-            result_data = {
-                'X数据': x_data,
-                'Y数据': y_data,
-                '图表类型': ['曲线拟合'] * len(x_data)
             }
             self.main_window.current_data = pd.DataFrame(result_data)
             
