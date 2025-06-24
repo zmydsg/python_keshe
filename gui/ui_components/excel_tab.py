@@ -407,5 +407,3 @@ class ExcelTab:
                 
             except Exception as e:
                 messagebox.showerror("错误", f"异常值检测失败: {str(e)}")
-        else:
-            messagebox.showwarning("警告", "请先读取Excel数据")

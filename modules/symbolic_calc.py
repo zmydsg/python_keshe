@@ -53,6 +53,10 @@ class SymbolicCalculator:
         except Exception as e:
             return [f"错误: {str(e)}"], None
     
+    def fourier_transform(self, expression, variable='t', freq_var='w'):
+        """傅里叶变换 - 为GUI提供的接口"""
+        return self.fourier_transform_calc(expression, variable, freq_var)
+    
     def fourier_transform_calc(self, expression, variable='t', freq_var='w'):
         """傅里叶变换"""
         try:

@@ -146,7 +146,17 @@ class DataVisualizer:
             
             # 绘制拟合曲线
             # 为了使拟合曲线更平滑，生成更多点
-            x_smooth = np.linspace(min(x_data), max(x_data), 100)
+            x_min, x_max = min(x_data), max(x_data)
+            
+            # 修复：当只有一个数据点或所有x值相同时的处理
+            if x_min == x_max:
+                # 如果所有x值相同，扩展范围以显示拟合线
+                x_range = max(1, abs(x_min) * 0.1)  # 设置一个合理的范围
+                x_smooth = np.linspace(x_min - x_range, x_min + x_range, 100)
+            else:
+                # 正常情况，稍微扩展范围以更好地显示拟合曲线
+                x_range = (x_max - x_min) * 0.1
+                x_smooth = np.linspace(x_min - x_range, x_max + x_range, 100)
             
             if fit_type == 'linear':
                 # 线性拟合

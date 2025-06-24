@@ -41,33 +41,51 @@ class NumericalCalculator:
         except Exception as e:
             return f"错误: {str(e)}"
     
-    def numerical_integration(self, func_str, a, b):
-        """数值积分"""
+    def evaluate_expression(self, expression):
+        """计算表达式 - 为GUI提供的接口"""
+        return self.basic_arithmetic(expression)
+    
+    def numerical_derivative(self, func_str, variable, point):
+        """数值求导 - 为GUI提供的接口"""
         try:
             def func(x):
                 allowed_names = {
                     k: v for k, v in math.__dict__.items() if not k.startswith("__")
                 }
-                allowed_names['x'] = x
+                allowed_names[variable] = x
                 return eval(func_str, {"__builtins__": {}}, allowed_names)
             
-            result, error = integrate.quad(func, a, b)
-            return result, error
+            return self.calculate_derivative(func, point)
         except Exception as e:
-            return f"错误: {str(e)}", None
+            return f"错误: {str(e)}"
     
-    def solve_equation_numerical(self, func_str, initial_guess=0):
-        """数值求解方程"""
+    def solve_equation_numerical(self, func_str, variable='x', initial_guess=0):
+        """数值求解方程 - 修复参数问题"""
         try:
             def func(x):
                 allowed_names = {
                     k: v for k, v in math.__dict__.items() if not k.startswith("__")
                 }
-                allowed_names['x'] = x
+                allowed_names[variable] = x
                 return eval(func_str, {"__builtins__": {}}, allowed_names)
             
             solution = optimize.fsolve(func, initial_guess)[0]
             return solution
+        except Exception as e:
+            return f"错误: {str(e)}"
+    
+    def numerical_integration(self, func_str, variable, a, b):
+        """数值积分 - 为GUI提供的接口"""
+        try:
+            def func(x):
+                allowed_names = {
+                    k: v for k, v in math.__dict__.items() if not k.startswith("__")
+                }
+                allowed_names[variable] = x
+                return eval(func_str, {"__builtins__": {}}, allowed_names)
+            
+            result, error = integrate.quad(func, a, b)
+            return result
         except Exception as e:
             return f"错误: {str(e)}"
     
