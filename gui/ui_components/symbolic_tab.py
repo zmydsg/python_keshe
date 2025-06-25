@@ -94,7 +94,7 @@ class SymbolicTab:
                 '求导结果': [result_str],
                 '操作类型': ['符号求导']
             }
-            self.main_window.current_data = pd.DataFrame(result_data)
+            self.main_window.append_to_current_data(result_data)
             
         except Exception as e:
             self.symbolic_result_text.delete(1.0, tk.END)
@@ -124,7 +124,7 @@ class SymbolicTab:
                 '积分结果': [result_str],
                 '操作类型': ['符号积分']
             }
-            self.main_window.current_data = pd.DataFrame(result_data)
+            self.main_window.append_to_current_data(result_data)
             
         except Exception as e:
             self.symbolic_result_text.delete(1.0, tk.END)
@@ -154,7 +154,7 @@ class SymbolicTab:
                 '解': [result_str],
                 '操作类型': ['符号求解']
             }
-            self.main_window.current_data = pd.DataFrame(result_data)
+            self.main_window.append_to_current_data(result_data)
             
         except Exception as e:
             self.symbolic_result_text.delete(1.0, tk.END)
@@ -184,7 +184,7 @@ class SymbolicTab:
                 '傅里叶变换': [result_str],
                 '操作类型': ['傅里叶变换']
             }
-            self.main_window.current_data = pd.DataFrame(result_data)
+            self.main_window.append_to_current_data(result_data)
             
         except Exception as e:
             self.symbolic_result_text.delete(1.0, tk.END)

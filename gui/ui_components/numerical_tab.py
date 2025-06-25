@@ -101,7 +101,7 @@ class NumericalTab:
                 '计算结果': [result],
                 '操作类型': ['数值计算']
             }
-            self.main_window.current_data = pd.DataFrame(result_data)
+            self.main_window.append_to_current_data(result_data)
             
         except Exception as e:
             self.numerical_result_text.delete(1.0, tk.END)
@@ -135,7 +135,7 @@ class NumericalTab:
                 '导数值': [result],
                 '操作类型': ['数值求导']
             }
-            self.main_window.current_data = pd.DataFrame(result_data)
+            self.main_window.append_to_current_data(result_data)
             
         except Exception as e:
             self.numerical_result_text.delete(1.0, tk.END)
@@ -175,7 +175,7 @@ class NumericalTab:
                 '积分值': [result],
                 '操作类型': ['数值积分']
             }
-            self.main_window.current_data = pd.DataFrame(result_data)
+            self.main_window.append_to_current_data(result_data)
             
         except Exception as e:
             self.numerical_result_text.delete(1.0, tk.END)
@@ -209,7 +209,7 @@ class NumericalTab:
                 '数值解': [result],
                 '操作类型': ['数值求解']
             }
-            self.main_window.current_data = pd.DataFrame(result_data)
+            self.main_window.append_to_current_data(result_data)
             
         except Exception as e:
             self.numerical_result_text.delete(1.0, tk.END)
