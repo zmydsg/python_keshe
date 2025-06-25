@@ -49,7 +49,8 @@ class VisualizationTab:
         ttk.Button(button_frame4, text="散点图", command=self.plot_scatter, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
         ttk.Button(button_frame4, text="函数图像", command=self.plot_function, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
         ttk.Button(button_frame4, text="直方图", command=self.plot_histogram, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
-        ttk.Button(button_frame4, text="曲线拟合", command=self.plot_curve_fit, style='Modern.TButton').pack(side=tk.LEFT)
+        ttk.Button(button_frame4, text="曲线拟合", command=self.plot_curve_fit, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_frame4, text="保存到Excel", command=self.save_to_excel, style='Modern.TButton').pack(side=tk.LEFT)
         
         # 图形显示区域
         plot_frame = ttk.LabelFrame(main_container, text="图形显示")
@@ -256,3 +257,10 @@ class VisualizationTab:
             
         except Exception as e:
             messagebox.showerror("错误", f"绘图错误: {str(e)}")
+    
+    def save_to_excel(self):
+        """保存可视化数据到Excel"""
+        if self.main_window.current_data is not None:
+            self.main_window.save_excel_data()
+        else:
+            messagebox.showwarning("警告", "没有数据可保存，请先执行绘图操作")

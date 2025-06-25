@@ -55,6 +55,21 @@ class ExcelHandler:
         except Exception as e:
             return f"写入Excel文件错误: {str(e)}"
     
+    def save_excel(self, data, file_path, sheet_name='Sheet1'):
+        """保存数据到Excel文件（主窗口调用的方法）"""
+        try:
+            if isinstance(data, dict):
+                df = pd.DataFrame(data)
+            elif isinstance(data, list):
+                df = pd.DataFrame(data)
+            else:
+                df = data
+            
+            df.to_excel(file_path, sheet_name=sheet_name, index=False)
+            return "保存成功"
+        except Exception as e:
+            return f"保存Excel文件错误: {str(e)}"
+    
     def get_column_data(self, df, column_name):
         """获取指定列数据"""
         try:

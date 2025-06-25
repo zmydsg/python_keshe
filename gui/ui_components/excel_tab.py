@@ -168,92 +168,140 @@ class ExcelTab:
         for index, row in df.iterrows():
             self.excel_tree.insert('', 'end', values=list(row))
     
-    def import_to_numerical(self):
-        """将Excel数据导入到数值计算模块"""
-        if self.main_window.current_data is not None:
-            column = self.column_combo.get()
-            if column and column in self.main_window.current_data.columns:
-                data = self.main_window.excel_handler.export_column_to_list(self.main_window.current_data, column)
-                if data:
-                    messagebox.showinfo("成功", f"已导入 {len(data)} 个数据点到数值计算模块")
-                else:
-                    messagebox.showwarning("警告", "选择的列没有有效数据")
-            else:
-                messagebox.showwarning("警告", "请选择有效的列")
-        else:
-            messagebox.showwarning("警告", "请先读取Excel数据")
-    
     def import_to_data_processing(self):
         """将Excel数据导入到数据处理模块"""
-        if self.main_window.current_data is not None:
-            column = self.column_combo.get()
-            if column and column in self.main_window.current_data.columns:
-                data = self.main_window.excel_handler.export_column_to_list(self.main_window.current_data, column)
-                if data:
-                    # 将数据转换为逗号分隔的字符串并填入数据处理模块
-                    data_str = ','.join(map(str, data))
-                    self.main_window.data_processing_tab.data_entry.delete(0, tk.END)
-                    self.main_window.data_processing_tab.data_entry.insert(0, data_str)
-                    messagebox.showinfo("成功", f"已导入 {len(data)} 个数据点到数据处理模块")
-                else:
-                    messagebox.showwarning("警告", "选择的列没有有效数据")
+        # 检查是否选择了文件
+        if not hasattr(self.main_window, 'excel_file_path'):
+            messagebox.showwarning("警告", "请先选择Excel文件")
+            return
+        
+        # 如果没有读取数据，自动读取
+        if self.main_window.current_data is None:
+            self.read_excel_data()
+            if self.main_window.current_data is None:
+                return  # 读取失败
+        
+        column = self.column_combo.get()
+        if not column:
+            messagebox.showwarning("警告", "请选择要导入的列")
+            return
+            
+        if column in self.main_window.current_data.columns:
+            data = self.main_window.excel_handler.export_column_to_list(self.main_window.current_data, column)
+            if data:
+                # 将数据转换为逗号分隔的字符串并填入数据处理模块
+                data_str = ','.join(map(str, data))
+                self.main_window.data_processing_tab.data_entry.delete(0, tk.END)
+                self.main_window.data_processing_tab.data_entry.insert(0, data_str)
+                messagebox.showinfo("成功", f"已导入 {len(data)} 个数据点到数据处理模块")
             else:
-                messagebox.showwarning("警告", "请选择有效的列")
+                messagebox.showwarning("警告", "选择的列没有有效数据")
         else:
-            messagebox.showwarning("警告", "请先读取Excel数据")
+            messagebox.showwarning("警告", "请选择有效的列")
+    
+    def import_to_numerical(self):
+        """将Excel数据导入到数值计算模块"""
+        # 检查是否选择了文件
+        if not hasattr(self.main_window, 'excel_file_path'):
+            messagebox.showwarning("警告", "请先选择Excel文件")
+            return
+        
+        # 如果没有读取数据，自动读取
+        if self.main_window.current_data is None:
+            self.read_excel_data()
+            if self.main_window.current_data is None:
+                return  # 读取失败
+        
+        column = self.column_combo.get()
+        if not column:
+            messagebox.showwarning("警告", "请选择要导入的列")
+            return
+            
+        if column in self.main_window.current_data.columns:
+            data = self.main_window.excel_handler.export_column_to_list(self.main_window.current_data, column)
+            if data:
+                messagebox.showinfo("成功", f"已导入 {len(data)} 个数据点到数值计算模块")
+            else:
+                messagebox.showwarning("警告", "选择的列没有有效数据")
+        else:
+            messagebox.showwarning("警告", "请选择有效的列")
     
     def import_to_visualization(self):
         """将Excel数据导入到可视化模块"""
-        if self.main_window.current_data is not None:
-            column = self.column_combo.get()
-            if column and column in self.main_window.current_data.columns:
-                data = self.main_window.excel_handler.export_column_to_list(self.main_window.current_data, column)
-                if data:
-                    # 将数据转换为逗号分隔的字符串并填入可视化模块
-                    data_str = ','.join(map(str, data))
-                    self.main_window.visualization_tab.plot_x_entry.delete(0, tk.END)
-                    self.main_window.visualization_tab.plot_x_entry.insert(0, data_str)
-                    messagebox.showinfo("成功", f"已导入 {len(data)} 个数据点到可视化模块")
-                else:
-                    messagebox.showwarning("警告", "选择的列没有有效数据")
+        # 检查是否选择了文件
+        if not hasattr(self.main_window, 'excel_file_path'):
+            messagebox.showwarning("警告", "请先选择Excel文件")
+            return
+        
+        # 如果没有读取数据，自动读取
+        if self.main_window.current_data is None:
+            self.read_excel_data()
+            if self.main_window.current_data is None:
+                return  # 读取失败
+        
+        column = self.column_combo.get()
+        if not column:
+            messagebox.showwarning("警告", "请选择要导入的列")
+            return
+            
+        if column in self.main_window.current_data.columns:
+            data = self.main_window.excel_handler.export_column_to_list(self.main_window.current_data, column)
+            if data:
+                # 将数据转换为逗号分隔的字符串并填入可视化模块
+                data_str = ','.join(map(str, data))
+                self.main_window.visualization_tab.plot_x_entry.delete(0, tk.END)
+                self.main_window.visualization_tab.plot_x_entry.insert(0, data_str)
+                messagebox.showinfo("成功", f"已导入 {len(data)} 个数据点到可视化模块")
             else:
-                messagebox.showwarning("警告", "请选择有效的列")
+                messagebox.showwarning("警告", "选择的列没有有效数据")
         else:
-            messagebox.showwarning("警告", "请先读取Excel数据")
+            messagebox.showwarning("警告", "请选择有效的列")
     
     def import_xy_data(self):
         """导入XY数据到相关模块"""
-        if self.main_window.current_data is not None:
-            x_column = self.x_column_combo.get()
-            y_column = self.y_column_combo.get()
+        # 检查是否选择了文件
+        if not hasattr(self.main_window, 'excel_file_path'):
+            messagebox.showwarning("警告", "请先选择Excel文件")
+            return
+        
+        # 如果没有读取数据，自动读取
+        if self.main_window.current_data is None:
+            self.read_excel_data()
+            if self.main_window.current_data is None:
+                return  # 读取失败
+        
+        x_column = self.x_column_combo.get()
+        y_column = self.y_column_combo.get()
+        
+        if not x_column or not y_column:
+            messagebox.showwarning("警告", "请选择X和Y列")
+            return
+        
+        if x_column in self.main_window.current_data.columns and y_column in self.main_window.current_data.columns:
+            x_data = self.main_window.excel_handler.export_column_to_list(self.main_window.current_data, x_column)
+            y_data = self.main_window.excel_handler.export_column_to_list(self.main_window.current_data, y_column)
             
-            if x_column and y_column and x_column in self.main_window.current_data.columns and y_column in self.main_window.current_data.columns:
-                x_data = self.main_window.excel_handler.export_column_to_list(self.main_window.current_data, x_column)
-                y_data = self.main_window.excel_handler.export_column_to_list(self.main_window.current_data, y_column)
+            if x_data and y_data:
+                # 将数据转换为逗号分隔的字符串并填入可视化模块
+                x_data_str = ','.join(map(str, x_data))
+                y_data_str = ','.join(map(str, y_data))
                 
-                if x_data and y_data:
-                    # 将数据转换为逗号分隔的字符串并填入可视化模块
-                    x_data_str = ','.join(map(str, x_data))
-                    y_data_str = ','.join(map(str, y_data))
-                    
-                    self.main_window.visualization_tab.plot_x_entry.delete(0, tk.END)
-                    self.main_window.visualization_tab.plot_x_entry.insert(0, x_data_str)
-                    self.main_window.visualization_tab.plot_y_entry.delete(0, tk.END)
-                    self.main_window.visualization_tab.plot_y_entry.insert(0, y_data_str)
-                    
-                    # 同时填入数据处理模块的曲线拟合
-                    self.main_window.data_processing_tab.x_data_entry.delete(0, tk.END)
-                    self.main_window.data_processing_tab.x_data_entry.insert(0, x_data_str)
-                    self.main_window.data_processing_tab.y_data_entry.delete(0, tk.END)
-                    self.main_window.data_processing_tab.y_data_entry.insert(0, y_data_str)
-                    
-                    messagebox.showinfo("成功", f"已导入 {len(x_data)} 个XY数据点到可视化和数据处理模块")
-                else:
-                    messagebox.showwarning("警告", "选择的列没有有效数据")
+                self.main_window.visualization_tab.plot_x_entry.delete(0, tk.END)
+                self.main_window.visualization_tab.plot_x_entry.insert(0, x_data_str)
+                self.main_window.visualization_tab.plot_y_entry.delete(0, tk.END)
+                self.main_window.visualization_tab.plot_y_entry.insert(0, y_data_str)
+                
+                # 同时填入数据处理模块的曲线拟合
+                self.main_window.data_processing_tab.x_data_entry.delete(0, tk.END)
+                self.main_window.data_processing_tab.x_data_entry.insert(0, x_data_str)
+                self.main_window.data_processing_tab.y_data_entry.delete(0, tk.END)
+                self.main_window.data_processing_tab.y_data_entry.insert(0, y_data_str)
+                
+                messagebox.showinfo("成功", f"已导入 {len(x_data)} 个XY数据点到可视化和数据处理模块")
             else:
-                messagebox.showwarning("警告", "请选择有效的X和Y列")
+                messagebox.showwarning("警告", "选择的列没有有效数据")
         else:
-            messagebox.showwarning("警告", "请先读取Excel数据")
+            messagebox.showwarning("警告", "请选择有效的X和Y列")
     
     def display_excel_result(self, result_text):
         """显示Excel计算结果"""
@@ -349,16 +397,25 @@ class ExcelTab:
                 result = self.main_window.data_processor.curve_fitting(x_data, y_data, 'linear')
                 
                 if isinstance(result, dict):
-                    # 构建拟合结果DataFrame
+                    # 只保存拟合结果和关键信息，不重复保存原始数据
                     fit_data = {
-                        'X原始数据': x_data,
-                        'Y原始数据': y_data,
-                        'Y拟合数据': result['拟合数据'],
-                        '拟合方程': [result['拟合方程']] * len(x_data),
-                        'R²值': [result['R²']] * len(x_data)
+                        'X数据': x_data,
+                        'Y原始': y_data,
+                        'Y拟合': result['拟合数据']
                     }
+                    
+                    # 添加拟合参数作为单独的摘要
+                    summary_data = {
+                        '参数': ['拟合方程', 'R²值', '数据点数'],
+                        '数值': [result['拟合方程'], result['R²'], len(x_data)]
+                    }
+                    
+                    # 创建多工作表结构或选择主要数据
                     self.main_window.current_data = pd.DataFrame(fit_data)
                     
+                    # 可以考虑将摘要信息存储到额外属性中
+                    self.main_window.fit_summary = pd.DataFrame(summary_data)
+                
                     # 显示结果
                     result_text = f"曲线拟合结果:\n"
                     result_text += f"拟合方程: {result['拟合方程']}\n"
@@ -390,13 +447,25 @@ class ExcelTab:
                 outliers_iqr = self.main_window.data_processor.outlier_detection(data, method='iqr')
                 outliers_zscore = self.main_window.data_processor.outlier_detection(data, method='zscore')
                 
-                # 构建异常值检测结果DataFrame
+                # 只保存异常值和统计信息，不保存所有原始数据
                 outlier_data = {
-                    '原始数据': data,
-                    'IQR异常值': [x in outliers_iqr for x in data],
-                    'Z-score异常值': [x in outliers_zscore for x in data]
+                    '检测方法': ['IQR'] * len(outliers_iqr) + ['Z-score'] * len(outliers_zscore),
+                    '异常值': list(outliers_iqr) + list(outliers_zscore),
+                    '数据索引': [data.index(x) for x in outliers_iqr] + [data.index(x) for x in outliers_zscore]
                 }
-                self.main_window.current_data = pd.DataFrame(outlier_data)
+                
+                # 添加统计摘要
+                summary_data = {
+                    '统计项': ['总数据量', 'IQR异常值数量', 'Z-score异常值数量', '异常值比例(%)'],
+                    '数值': [len(data), len(outliers_iqr), len(outliers_zscore), 
+                            round((len(set(outliers_iqr + outliers_zscore)) / len(data)) * 100, 2)]
+                }
+                
+                # 合并数据
+                if outlier_data['异常值']:  # 如果有异常值
+                    self.main_window.current_data = pd.DataFrame(outlier_data)
+                else:  # 如果没有异常值，只保存统计摘要
+                    self.main_window.current_data = pd.DataFrame(summary_data)
                 
                 # 显示结果
                 result_text = f"异常值检测结果 (列: {column}):\n"

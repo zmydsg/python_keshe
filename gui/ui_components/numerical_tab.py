@@ -26,7 +26,8 @@ class NumericalTab:
         self.numerical_expr_entry = ttk.Entry(basic_content, width=40, style='Modern.TEntry')
         self.numerical_expr_entry.grid(row=0, column=1, padx=(0, 15), pady=8, sticky=tk.EW)
         
-        ttk.Button(basic_content, text="计算", command=self.numerical_calculate, style='Modern.TButton').grid(row=0, column=2, padx=0, pady=8)
+        ttk.Button(basic_content, text="计算", command=self.numerical_calculate, style='Modern.TButton').grid(row=0, column=2, padx=(0, 8), pady=8)
+        ttk.Button(basic_content, text="保存到Excel", command=self.save_to_excel, style='Modern.TButton').grid(row=0, column=3, padx=0, pady=8)
         
         basic_content.columnconfigure(1, weight=1)
         
@@ -213,3 +214,10 @@ class NumericalTab:
         except Exception as e:
             self.numerical_result_text.delete(1.0, tk.END)
             self.numerical_result_text.insert(tk.END, f"错误: {str(e)}")
+    
+    def save_to_excel(self):
+        """保存数值计算结果到Excel"""
+        if self.main_window.current_data is not None:
+            self.main_window.save_excel_data()
+        else:
+            messagebox.showwarning("警告", "没有数据可保存，请先执行数值计算操作")

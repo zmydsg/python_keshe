@@ -46,7 +46,8 @@ class SymbolicTab:
         ttk.Button(button_container, text="求导", command=self.symbolic_differentiate, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
         ttk.Button(button_container, text="积分", command=self.symbolic_integrate, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
         ttk.Button(button_container, text="求解方程", command=self.symbolic_solve, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
-        ttk.Button(button_container, text="傅里叶变换", command=self.symbolic_fourier, style='Modern.TButton').pack(side=tk.LEFT)
+        ttk.Button(button_container, text="傅里叶变换", command=self.symbolic_fourier, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_container, text="保存到Excel", command=self.save_to_excel, style='Modern.TButton').pack(side=tk.LEFT)
         
         # 结果显示框架
         result_frame = ttk.LabelFrame(main_container, text="结果")
@@ -188,3 +189,10 @@ class SymbolicTab:
         except Exception as e:
             self.symbolic_result_text.delete(1.0, tk.END)
             self.symbolic_result_text.insert(tk.END, f"错误: {str(e)}")
+    
+    def save_to_excel(self):
+        """保存符号计算结果到Excel"""
+        if self.main_window.current_data is not None:
+            self.main_window.save_excel_data()
+        else:
+            messagebox.showwarning("警告", "没有数据可保存，请先执行符号计算操作")

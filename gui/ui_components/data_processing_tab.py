@@ -31,7 +31,8 @@ class DataProcessingTab:
         button_frame1.grid(row=0, column=2, padx=0, pady=8)
         
         ttk.Button(button_frame1, text="统计分析", command=self.data_statistics, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
-        ttk.Button(button_frame1, text="异常值检测", command=self.data_outliers, style='Modern.TButton').pack(side=tk.LEFT)
+        ttk.Button(button_frame1, text="异常值检测", command=self.data_outliers, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(button_frame1, text="保存到Excel", command=self.save_to_excel, style='Modern.TButton').pack(side=tk.LEFT)
         
         # 配置列权重
         input_content.columnconfigure(1, weight=1)
@@ -198,3 +199,10 @@ class DataProcessingTab:
         except Exception as e:
             self.data_result_text.delete(1.0, tk.END)
             self.data_result_text.insert(tk.END, f"错误: {str(e)}")
+    
+    def save_to_excel(self):
+        """保存数据处理结果到Excel"""
+        if self.main_window.current_data is not None:
+            self.main_window.save_excel_data()
+        else:
+            messagebox.showwarning("警告", "没有数据可保存，请先执行数据处理操作")
