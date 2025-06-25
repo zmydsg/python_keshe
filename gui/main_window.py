@@ -177,12 +177,7 @@ class ScientificCalculatorGUI:
     def run(self):
         """运行GUI应用"""
         self.root.mainloop()
-
-if __name__ == "__main__":
-    app = ScientificCalculatorGUI()
-    app.run()
-
-
+    
     def append_to_current_data(self, new_data_dict):
         """累积保存操作结果到current_data"""
         new_df = pd.DataFrame(new_data_dict)
@@ -192,4 +187,8 @@ if __name__ == "__main__":
         else:
             # 使用concat进行数据追加，ignore_index=True重新编号
             self.current_data = pd.concat([self.current_data, new_df], ignore_index=True)
+
+if __name__ == "__main__":
+    app = ScientificCalculatorGUI()
+    app.run()
 
