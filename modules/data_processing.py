@@ -23,7 +23,8 @@ class DataProcessor:
         try:
             data = np.array(data)
             stats_dict = {
-                '均值': np.mean(data),
+                '数据点数': len(data),
+                '平均值': np.mean(data),
                 '中位数': np.median(data),
                 '标准差': np.std(data),
                 '方差': np.var(data),
@@ -116,14 +117,22 @@ class DataProcessor:
                 IQR = Q3 - Q1
                 lower_bound = Q1 - 1.5 * IQR
                 upper_bound = Q3 + 1.5 * IQR
-                outliers = data[(data < lower_bound) | (data > upper_bound)]
+                outlier_mask = (data < lower_bound) | (data > upper_bound)
+                outliers = data[outlier_mask]
+                normal_values = data[~outlier_mask]
+                outlier_indices = np.where(outlier_mask)[0]
                 
             elif method == 'zscore':
                 z_scores = np.abs(stats.zscore(data))
-                outliers = data[z_scores > 3]
+                outlier_mask = z_scores > 3
+                outliers = data[outlier_mask]
+                normal_values = data[~outlier_mask]
+                outlier_indices = np.where(outlier_mask)[0]
             
             return {
                 '异常值': outliers.tolist(),
+                '异常值索引': outlier_indices.tolist(),
+                '正常值': normal_values.tolist(),
                 '异常值数量': len(outliers),
                 '检测方法': method
             }

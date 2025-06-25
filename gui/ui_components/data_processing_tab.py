@@ -98,11 +98,11 @@ class DataProcessingTab:
             for key, value in result.items():
                 self.data_result_text.insert(tk.END, f"{key}: {value}\n")
             
-            # 保存结果到current_data
+            # 修复：使用正确的键名
             result_data = {
                 '原始数据': [data_str],
-                '数据点数': [result['数据点数']],
-                '平均值': [result['平均值']],
+                '数据点数': [result['数据点数']],  # 修复：使用正确的键名
+                '平均值': [result['平均值']],      # 修复：从'均值'改为'平均值'
                 '中位数': [result['中位数']],
                 '标准差': [result['标准差']],
                 '方差': [result['方差']],

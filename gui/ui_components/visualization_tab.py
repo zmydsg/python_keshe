@@ -220,7 +220,8 @@ class VisualizationTab:
             x_min = float(range_parts[0].strip())
             x_max = float(range_parts[1].strip())
             
-            self.main_window.visualizer.plot_function(func_str, x_min, x_max)
+            # 修复：传递元组参数而不是两个分离的参数
+            self.main_window.visualizer.plot_function(func_str, x_range=(x_min, x_max))
             
             # 保存绘图数据到current_data
             result_data = {
