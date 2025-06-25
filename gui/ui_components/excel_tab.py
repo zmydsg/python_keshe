@@ -63,23 +63,25 @@ class ExcelTab:
         ttk.Button(operation_content, text="导入XY数据", command=self.import_xy_data, style='Modern.TButton').grid(row=1, column=4, padx=0, pady=8)
         
         # 计算功能框架
-        calc_frame = ttk.LabelFrame(main_container, text="Excel数据计算")
-        calc_frame.pack(fill=tk.X, pady=(0, 15))
-        
-        calc_content = ttk.Frame(calc_frame)
-        calc_content.pack(fill=tk.X, padx=15, pady=15)
-        
-        button_container2 = ttk.Frame(calc_content)
-        button_container2.pack(fill=tk.X)
-        
-        ttk.Button(button_container2, text="统计分析", command=self.excel_statistics, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
-        ttk.Button(button_container2, text="相关性分析", command=self.excel_correlation, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
-        ttk.Button(button_container2, text="曲线拟合", command=self.excel_curve_fitting, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
-        ttk.Button(button_container2, text="异常值检测", command=self.excel_outlier_detection, style='Modern.TButton').pack(side=tk.LEFT)
+        # 删除整个计算功能框架
+        # calc_frame = ttk.LabelFrame(main_container, text="Excel数据计算")
+        # calc_frame.pack(fill=tk.X, pady=(0, 15))
+        # 
+        # calc_content = ttk.Frame(calc_frame)
+        # calc_content.pack(fill=tk.X, padx=15, pady=15)
+        # 
+        # button_container2 = ttk.Frame(calc_content)
+        # button_container2.pack(fill=tk.X)
+        # 
+        # # 删除这四个按钮
+        # # ttk.Button(button_container2, text="统计分析", command=self.excel_statistics, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        # # ttk.Button(button_container2, text="相关性分析", command=self.excel_correlation, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        # # ttk.Button(button_container2, text="曲线拟合", command=self.excel_curve_fitting, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
+        # # ttk.Button(button_container2, text="异常值检测", command=self.excel_outlier_detection, style='Modern.TButton').pack(side=tk.LEFT)
         
         # 数据显示框架
         data_frame = ttk.LabelFrame(main_container, text="数据预览")
-        data_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 15))
+        data_frame.pack(fill=tk.BOTH, expand=True)  # 移除 pady=(0, 15)，让数据预览占满剩余空间
         
         data_content = ttk.Frame(data_frame)
         data_content.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
@@ -94,26 +96,27 @@ class ExcelTab:
         excel_scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
         excel_scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
         
-        # 结果显示
-        result_frame = ttk.LabelFrame(main_container, text="计算结果")
-        result_frame.pack(fill=tk.X)
-        
-        result_content = ttk.Frame(result_frame)
-        result_content.pack(fill=tk.X, padx=15, pady=15)
-        
-        self.excel_result_text = tk.Text(result_content, 
-                                        height=8,
-                                        font=('Consolas', 10),
-                                        bg='#f8f9fa',
-                                        fg='#495057',
-                                        borderwidth=1,
-                                        relief='solid',
-                                        selectbackground='#007bff',
-                                        selectforeground='white')
-        excel_result_scrollbar = ttk.Scrollbar(result_content, orient=tk.VERTICAL, command=self.excel_result_text.yview)
-        self.excel_result_text.configure(yscrollcommand=excel_result_scrollbar.set)
-        self.excel_result_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        excel_result_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        # 删除以下整个结果显示部分：
+        # # 结果显示
+        # result_frame = ttk.LabelFrame(main_container, text="计算结果")
+        # result_frame.pack(fill=tk.X)
+        # 
+        # result_content = ttk.Frame(result_frame)
+        # result_content.pack(fill=tk.X, padx=15, pady=15)
+        # 
+        # self.excel_result_text = tk.Text(result_content, 
+        #                                 height=8,
+        #                                 font=('Consolas', 10),
+        #                                 bg='#f8f9fa',
+        #                                 fg='#495057',
+        #                                 borderwidth=1,
+        #                                 relief='solid',
+        #                                 selectbackground='#007bff',
+        #                                 selectforeground='white')
+        # excel_result_scrollbar = ttk.Scrollbar(result_content, orient=tk.VERTICAL, command=self.excel_result_text.yview)
+        # self.excel_result_text.configure(yscrollcommand=excel_result_scrollbar.set)
+        # self.excel_result_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # excel_result_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
     
     def select_excel_file(self):
         """选择Excel文件"""
@@ -302,177 +305,3 @@ class ExcelTab:
                 messagebox.showwarning("警告", "选择的列没有有效数据")
         else:
             messagebox.showwarning("警告", "请选择有效的X和Y列")
-    
-    def display_excel_result(self, result_text):
-        """显示Excel计算结果"""
-        self.excel_result_text.delete(1.0, tk.END)
-        self.excel_result_text.insert(tk.END, result_text)
-    
-    def excel_statistics(self):
-        """Excel数据统计分析"""
-        if self.main_window.current_data is not None:
-            try:
-                # 选择数值列进行统计
-                numeric_columns = self.main_window.current_data.select_dtypes(include=[float, int]).columns
-                if len(numeric_columns) == 0:
-                    messagebox.showwarning("警告", "没有找到数值列")
-                    return
-                
-                result = self.main_window.data_processor.basic_statistics(self.main_window.current_data[numeric_columns[0]].tolist())
-                
-                # 构建结果DataFrame
-                stats_data = {
-                    '统计项': ['均值', '中位数', '标准差', '方差', '最小值', '最大值', '四分位数Q1', '四分位数Q3'],
-                    '数值': [result['均值'], result['中位数'], result['标准差'], result['方差'], 
-                            result['最小值'], result['最大值'], result['四分位数'][0], result['四分位数'][1]]
-                }
-                self.main_window.current_data = pd.DataFrame(stats_data)
-                
-                # 显示结果
-                result_text = f"统计分析结果 (列: {numeric_columns[0]}):\n"
-                for key, value in result.items():
-                    if key == '四分位数':
-                        result_text += f"{key}: Q1={value[0]:.4f}, Q3={value[1]:.4f}\n"
-                    else:
-                        result_text += f"{key}: {value:.4f}\n"
-                
-                self.display_excel_result(result_text)
-                
-            except Exception as e:
-                messagebox.showerror("错误", f"统计分析失败: {str(e)}")
-        else:
-            messagebox.showwarning("警告", "请先读取Excel数据")
-    
-    def excel_correlation(self):
-        """Excel数据相关性分析"""
-        if self.main_window.current_data is not None:
-            try:
-                # 选择数值列进行相关性分析
-                numeric_columns = self.main_window.current_data.select_dtypes(include=[float, int]).columns
-                if len(numeric_columns) < 2:
-                    messagebox.showwarning("警告", "至少需要两个数值列进行相关性分析")
-                    return
-                
-                # 计算相关性矩阵
-                correlation_matrix = self.main_window.current_data[numeric_columns].corr()
-                
-                # 保存相关性矩阵到current_data
-                self.main_window.current_data = correlation_matrix
-                
-                # 显示结果
-                result_text = "相关性分析结果:\n"
-                result_text += correlation_matrix.to_string()
-                
-                self.display_excel_result(result_text)
-                
-            except Exception as e:
-                messagebox.showerror("错误", f"相关性分析失败: {str(e)}")
-        else:
-            messagebox.showwarning("警告", "请先读取Excel数据")
-    
-    def excel_curve_fitting(self):
-        """Excel数据曲线拟合"""
-        if self.main_window.current_data is not None:
-            try:
-                # 获取选择的X和Y列
-                x_column = self.x_column_combo.get()
-                y_column = self.y_column_combo.get()
-                
-                if not x_column or not y_column:
-                    messagebox.showwarning("警告", "请选择X和Y列")
-                    return
-                
-                if x_column not in self.main_window.current_data.columns or y_column not in self.main_window.current_data.columns:
-                    messagebox.showwarning("警告", "选择的列不存在")
-                    return
-                
-                x_data = self.main_window.current_data[x_column].dropna().tolist()
-                y_data = self.main_window.current_data[y_column].dropna().tolist()
-                
-                if len(x_data) != len(y_data) or len(x_data) < 2:
-                    messagebox.showwarning("警告", "数据长度不一致或数据点太少")
-                    return
-                
-                # 进行线性拟合
-                result = self.main_window.data_processor.curve_fitting(x_data, y_data, 'linear')
-                
-                if isinstance(result, dict):
-                    # 只保存拟合结果和关键信息，不重复保存原始数据
-                    fit_data = {
-                        'X数据': x_data,
-                        'Y原始': y_data,
-                        'Y拟合': result['拟合数据']
-                    }
-                    
-                    # 添加拟合参数作为单独的摘要
-                    summary_data = {
-                        '参数': ['拟合方程', 'R²值', '数据点数'],
-                        '数值': [result['拟合方程'], result['R²'], len(x_data)]
-                    }
-                    
-                    # 创建多工作表结构或选择主要数据
-                    self.main_window.current_data = pd.DataFrame(fit_data)
-                    
-                    # 可以考虑将摘要信息存储到额外属性中
-                    self.main_window.fit_summary = pd.DataFrame(summary_data)
-                
-                    # 显示结果
-                    result_text = f"曲线拟合结果:\n"
-                    result_text += f"拟合方程: {result['拟合方程']}\n"
-                    result_text += f"R²: {result['R²']:.4f}\n"
-                    
-                    self.display_excel_result(result_text)
-                else:
-                    messagebox.showerror("错误", f"曲线拟合失败: {result}")
-                
-            except Exception as e:
-                messagebox.showerror("错误", f"曲线拟合失败: {str(e)}")
-        else:
-            messagebox.showwarning("警告", "请先读取Excel数据")
-    
-    def excel_outlier_detection(self):
-        """Excel数据异常值检测"""
-        if self.main_window.current_data is not None:
-            try:
-                # 选择数值列进行异常值检测
-                numeric_columns = self.main_window.current_data.select_dtypes(include=[float, int]).columns
-                if len(numeric_columns) == 0:
-                    messagebox.showwarning("警告", "没有找到数值列")
-                    return
-                
-                column = numeric_columns[0]  # 使用第一个数值列
-                data = self.main_window.current_data[column].dropna().tolist()
-                
-                # 使用IQR方法检测异常值
-                outliers_iqr = self.main_window.data_processor.outlier_detection(data, method='iqr')
-                outliers_zscore = self.main_window.data_processor.outlier_detection(data, method='zscore')
-                
-                # 只保存异常值和统计信息，不保存所有原始数据
-                outlier_data = {
-                    '检测方法': ['IQR'] * len(outliers_iqr) + ['Z-score'] * len(outliers_zscore),
-                    '异常值': list(outliers_iqr) + list(outliers_zscore),
-                    '数据索引': [data.index(x) for x in outliers_iqr] + [data.index(x) for x in outliers_zscore]
-                }
-                
-                # 添加统计摘要
-                summary_data = {
-                    '统计项': ['总数据量', 'IQR异常值数量', 'Z-score异常值数量', '异常值比例(%)'],
-                    '数值': [len(data), len(outliers_iqr), len(outliers_zscore), 
-                            round((len(set(outliers_iqr + outliers_zscore)) / len(data)) * 100, 2)]
-                }
-                
-                # 合并数据
-                if outlier_data['异常值']:  # 如果有异常值
-                    self.main_window.current_data = pd.DataFrame(outlier_data)
-                else:  # 如果没有异常值，只保存统计摘要
-                    self.main_window.current_data = pd.DataFrame(summary_data)
-                
-                # 显示结果
-                result_text = f"异常值检测结果 (列: {column}):\n"
-                result_text += f"IQR方法检测到 {len(outliers_iqr)} 个异常值: {outliers_iqr}\n"
-                result_text += f"Z-score方法检测到 {len(outliers_zscore)} 个异常值: {outliers_zscore}\n"
-                
-                self.display_excel_result(result_text)
-                
-            except Exception as e:
-                messagebox.showerror("错误", f"异常值检测失败: {str(e)}")
