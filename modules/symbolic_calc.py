@@ -9,8 +9,16 @@ import sympy as sp
 from sympy import symbols, diff, integrate, solve, fourier_transform, inverse_fourier_transform
 from sympy import sin, cos, exp, pi, oo, I
 import numpy as np
+from latex2sympy2 import latex2sympy
 
 class SymbolicCalculator:
+    def latex_to_sympy(self, latex_expr):
+        try:
+            sympy_expr = latex2sympy(latex_expr)
+            return str(sympy_expr), sympy_expr
+        except Exception as e:
+            return f"错误: {str(e)}", None
+            
     def __init__(self):
         self.x, self.y, self.z, self.t = symbols('x y z t')
         self.w = symbols('w', real=True)

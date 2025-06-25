@@ -24,7 +24,8 @@ class NumericalCalculator:
             }
             allowed_names.update({
                 "abs": abs, "round": round, "min": min, "max": max,
-                "sum": sum, "pow": pow
+                "sum": sum, "pow": pow, 'det': np.linalg.det, 'inv': np.linalg.inv,
+                'mat': np.matrix
             })
             
             result = eval(expression, {"__builtins__": {}}, allowed_names)
@@ -61,6 +62,9 @@ class NumericalCalculator:
     
     def solve_equation_numerical(self, func_str, variable='x', initial_guess=0):
         """数值求解方程 - 修复参数问题"""
+        func_str = func_str.replace('^', '**')
+        if '=' in func_str:
+            func_str = '-'.join(map(lambda x: '('+x+')', func_str.split('=')))
         try:
             def func(x):
                 allowed_names = {
