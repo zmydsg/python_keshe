@@ -1,14 +1,20 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class SymbolicTab:
     def __init__(self, parent, main_window):
         self.main_window = main_window
         self.frame = ttk.Frame(parent)
         parent.add(self.frame, text="符号计算")
+        self.figure = plt.Figure(figsize=(3, 2), dpi=100)
+        self.canvas = FigureCanvasTkAgg(self.figure, master=self.frame)
         self.create_ui()
-    
+        self.latex_preview = self.figure.add_subplot(111)
+        self.latex_preview.axis('off')
+
     def create_ui(self):
         """创建符号计算界面"""
         # 主容器
@@ -25,7 +31,8 @@ class SymbolicTab:
         ttk.Label(input_content, text="表达式:", style='Modern.TLabel').grid(row=0, column=0, sticky=tk.W, padx=(0, 10), pady=8)
         self.symbolic_expr_entry = ttk.Entry(input_content, width=40, style='Modern.TEntry')
         self.symbolic_expr_entry.grid(row=0, column=1, padx=(0, 15), pady=8, sticky=tk.EW)
-        
+        self.symbolic_expr_entry.bind('<KeyRelease>', self.update_latex_preview)
+
         ttk.Label(input_content, text="变量:", style='Modern.TLabel').grid(row=0, column=2, sticky=tk.W, padx=(0, 10), pady=8)
         self.symbolic_var_entry = ttk.Entry(input_content, width=10, style='Modern.TEntry')
         self.symbolic_var_entry.grid(row=0, column=3, padx=0, pady=8)
@@ -33,6 +40,11 @@ class SymbolicTab:
         
         input_content.columnconfigure(1, weight=1)
         
+        # LaTeX 预览框
+        preview_frame = ttk.LabelFrame(main_container, text="LaTeX 预览")
+        preview_frame.pack(fill=tk.X, pady=(0, 15))
+        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
         # 操作按钮框架
         button_frame = ttk.LabelFrame(main_container, text="操作")
         button_frame.pack(fill=tk.X, pady=(0, 15))
@@ -48,7 +60,7 @@ class SymbolicTab:
         ttk.Button(button_container, text="求解方程", command=self.symbolic_solve, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
         ttk.Button(button_container, text="傅里叶变换", command=self.symbolic_fourier, style='Modern.TButton').pack(side=tk.LEFT, padx=(0, 8))
         ttk.Button(button_container, text="保存到Excel", command=self.save_to_excel, style='Modern.TButton').pack(side=tk.LEFT)
-        
+
         # 结果显示框架
         result_frame = ttk.LabelFrame(main_container, text="结果")
         result_frame.pack(fill=tk.BOTH, expand=True)
@@ -69,7 +81,17 @@ class SymbolicTab:
         self.symbolic_result_text.configure(yscrollcommand=symbolic_scrollbar.set)
         self.symbolic_result_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         symbolic_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-    
+
+    def update_latex_preview(self, event=None):
+        self.latex_preview.clear()
+        expression = self.symbolic_expr_entry.get()
+        try:
+            self.latex_preview.text(0.5, 0.5, f'${expression}$', fontsize=12, ha='center', va='center')
+        except Exception as e:
+            self.latex_preview.text(0.5, 0.5, '无效的 LaTeX 公式', fontsize=12, ha='center', va='center')
+        self.latex_preview.axis('off')
+        self.canvas.draw()
+
     def symbolic_differentiate(self):
         """执行符号求导"""
         try:
@@ -80,7 +102,13 @@ class SymbolicTab:
                 messagebox.showwarning("输入错误", "请输入表达式")
                 return
                 
-            result_str, result_expr = self.main_window.symbolic_calc.differentiate(expression, variable)
+            try:
+                _, latex_expr = self.main_window.symbolic_calc.latex_to_sympy(expression)
+                if latex_expr is None:
+                    raise ValueError
+                result_str, result_expr = self.main_window.symbolic_calc.differentiate(str(latex_expr), variable)
+            except Exception:
+                result_str, result_expr = self.main_window.symbolic_calc.differentiate(expression, variable)
             
             self.symbolic_result_text.delete(1.0, tk.END)
             self.symbolic_result_text.insert(tk.END, f"表达式: {expression}\n")
@@ -110,7 +138,13 @@ class SymbolicTab:
                 messagebox.showwarning("输入错误", "请输入表达式")
                 return
                 
-            result_str, result_expr = self.main_window.symbolic_calc.integrate_symbolic(expression, variable)
+            try:
+                _, latex_expr = self.main_window.symbolic_calc.latex_to_sympy(expression)
+                if latex_expr is None:
+                    raise ValueError
+                result_str, result_expr = self.main_window.symbolic_calc.integrate_symbolic(str(latex_expr), variable)
+            except Exception:
+                result_str, result_expr = self.main_window.symbolic_calc.integrate_symbolic(expression, variable)
             
             self.symbolic_result_text.delete(1.0, tk.END)
             self.symbolic_result_text.insert(tk.END, f"表达式: {expression}\n")
@@ -140,7 +174,13 @@ class SymbolicTab:
                 messagebox.showwarning("输入错误", "请输入表达式")
                 return
                 
-            result_str, result_expr = self.main_window.symbolic_calc.solve_equation(expression, variable)
+            try:
+                _, latex_expr = self.main_window.symbolic_calc.latex_to_sympy(expression)
+                if latex_expr is None:
+                    raise ValueError
+                result_str, result_expr = self.main_window.symbolic_calc.solve_equation(str(latex_expr), variable)
+            except Exception:
+                result_str, result_expr = self.main_window.symbolic_calc.solve_equation(expression, variable)
             
             self.symbolic_result_text.delete(1.0, tk.END)
             self.symbolic_result_text.insert(tk.END, f"方程: {expression}\n")
@@ -170,7 +210,13 @@ class SymbolicTab:
                 messagebox.showwarning("输入错误", "请输入表达式")
                 return
                 
-            result_str, result_expr = self.main_window.symbolic_calc.fourier_transform(expression, variable)
+            try:
+                _, latex_expr = self.main_window.symbolic_calc.latex_to_sympy(expression)
+                if latex_expr is None:
+                    raise ValueError
+                result_str, result_expr = self.main_window.symbolic_calc.fourier_transform(str(latex_expr), variable)
+            except Exception:
+                result_str, result_expr = self.main_window.symbolic_calc.fourier_transform(expression, variable)
             
             self.symbolic_result_text.delete(1.0, tk.END)
             self.symbolic_result_text.insert(tk.END, f"表达式: {expression}\n")
